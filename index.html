@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting to OMYRA...</title>
+    <script>
+      // Grab all the query params from Strava
+      const params = window.location.search;
+      // Redirect to your Flutter app’s custom scheme with the same params
+      window.location.href = `com.omyra:/` + params;
+    </script>
+  </head>
+  <body>
+    <p>Redirecting you to the OMYRA app...</p>
+  </body>
+</html>
