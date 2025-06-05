@@ -1,16 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Redirecting to OMYRA...</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMYRA - Strava Connection</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h2>Connecting to OMYRA...</h2>
+        <p>Redirecting you back to the app</p>
+    </div>
+
     <script>
-      // Grab all the query params from Strava
-      const params = window.location.search;
-      // Redirect to your Flutter app’s custom scheme with the same params
-      window.location.href = `com.omyra:/` + params;
+        // Extract parameters from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        const state = urlParams.get('state');
+        
+        console.log('Callback received:', { code, error, state });
+        
+        if (code) {
+            // Success - redirect back to app with code
+            const callbackUrl = `omyra://oauth/callback?code=${encodeURIComponent(code)}`;
+            console.log('Redirecting to:', callbackUrl);
+            window.location.href = callbackUrl;
+        } else if (error) {
+            // Error - redirect back to app with error
+            const callbackUrl = `omyra://oauth/callback?error=${encodeURIComponent(error)}`;
+            console.log('Redirecting with error:', callbackUrl);
+            window.location.href = callbackUrl;
+        } else {
+            // No parameters - something went wrong
+            console.error('No code or error parameter found');
+            window.location.href = 'omyra://oauth/callback?error=no_code';
+        }
     </script>
-  </head>
-  <body>
-    <p>Redirecting you to the OMYRA app...</p>
-  </body>
+</body>
 </html>
